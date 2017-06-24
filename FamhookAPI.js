@@ -6,6 +6,7 @@ var rateLimit = require('express-rate-limit');
 var userRoutes = require('./Router/UserRoutes.js');
 var productRoutes = require('./Router/ProductRoutes.js');
 var masterRoutes = require('./Router/MasterDataRoutes.js');
+var orderRoutes = require('./Router/OrdersRoutes.js');
 // var floatRoutes = require('./Router/FloatRoute.js');
 // var relationRoutes = require('./Router/RelationRoute.js');
 // var masterRoutes = require('./Router/MasterRoute.js');
@@ -65,6 +66,7 @@ var apiRoutes = express.Router();
 app.use('/api/member',userRoutes);
 app.use('/api/product',productRoutes);
 app.use('/api/master',masterRoutes);
+app.use('/api/order',orderRoutes);
 
 //var port = 80;
 var port = 3000;

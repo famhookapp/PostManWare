@@ -75,7 +75,7 @@ exports.getProducts = function(req, res) {
     res.json({status:messages.apiStatusError,message:messages.productListOrderBy});
   }};
 
-  //Get single product, this will be used for selected product information display.
+//Get single product, this will be used for selected product information display.
 exports.getSingleProduct = function(req, res) {  
   // Set the client properties that came from the POST data
   if(req.body && req.body.productid)
@@ -129,6 +129,55 @@ exports.getSingleProduct = function(req, res) {
     res.status(200);     
     res.json({status:messages.apiStatusError,message:messages.productIdError});
   }};
+
+//Get delivery options from the table.
+exports.getDeliveryOptions = function(req, res) {  
+  // Set the client properties that came from the POST data
+ 
+    logger.info("ProductsControl - delivery options");    
+   
+    conn.pgConnectionPool(function(err, clientConn, done)
+    {    
+      if(err)
+      {        
+        console.log("ProductsControl - Error while connection PG" + err);
+        logger.error("ProductsControl - Error while connection PG" + err);
+        res.status(200);                  
+        res.json({status:messages.apiStatusError,message:messages.dbConnectionError});
+        done(err);
+      }
+      else
+      {        
+        //Get the single selected product information.
+        var queryStr = "SELECT * from milkdelivery_master.sp_get_dailyoptions($1)";
+        var paramsArr = [req.decoded.schema];
+        conn.pgSelectQuery(queryStr, paramsArr, clientConn, function(err, result){
+            res.status(200);
+            if(err)
+            {
+              logger.error("ProductsControl - Error while getting the delivery options " + err);
+              res.json({status:messages.apiStatusError,message:messages.dbConnectionError});
+            }
+            else
+            {
+                //If record is available.
+                if(result && result.rows && result.rows.length > 0)
+                {
+                  res.status(200);                  
+                    res.json({status:messages.apiStatusSuccess, result:result.rows});  
+                }
+                else
+                {             
+                  res.status(200);
+                  res.json({status:messages.apiStatusError,message:messages.deliveryOptionsError});                  
+                }
+            }
+            done(err);
+        });
+      }
+    });
+  
+  };
 
  //Get home page top and bottom banner ads
 exports.getHomeAdBanners = function(req, res) {  

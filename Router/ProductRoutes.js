@@ -15,6 +15,7 @@ router.use(function(req,res,next){
 router.get('/',function(req,res){res.status(400), res.json({message:messages.wrongApiUrl})});
 router.post('/prodlist',productController.getProducts); //Login User params:searchkey,orderby,brandid,categoryid;
 router.post('/singleproduct',productController.getSingleProduct); //Login User params:productid;
+router.post('/deliveryoptions',productController.getDeliveryOptions); //Delivery options masterdata;
 router.post('/homepagebanner',productController.getHomeAdBanners); 
 router.post('/homepagecategory',productController.getHomeCategory); 
 router.post('/homepageoffer',productController.getHomeOffer); 

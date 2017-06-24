@@ -20,5 +20,6 @@ router.post('/arealist',masterController.getAreaList); //Registration : Get all 
 router.post('/brandlist',masterController.getBrandList); //Registration : Get all brands.
 router.post('/categorylist',masterController.getCategoryList); //Registration : Get all category.
 router.post('/sortbylist',masterController.getSortbyList); //Registration : Get all sortby.
+router.post('/statuslist',masterController.getStatusList); //Registration : Get all status.
 
 module.exports = router;

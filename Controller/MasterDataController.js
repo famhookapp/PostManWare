@@ -306,4 +306,47 @@ exports.getSortbyList = function (req, res) {
     });
 };
 
+//Get list of status
+exports.getStatusList = function (req, res) {
+    //Set the client properties that came from the POST data
+    logger.info("MasterDataControl - Status list");
+
+    conn.pgConnectionPool(function (err, clientConn, done) {
+        if (err) {
+            console.log("MasterDataControl - Error while connection PG" + err);
+            logger.error("MasterDataControl - Error while connection PG" + err);
+            res.status(200);
+            res.json({ status: messages.apiStatusError, message: messages.dbConnectionError });
+            done(err);
+        }
+        else {
+            var isDeliveryStatus = (req.body.isdelivery)?req.body.isdelivery : false;
+            var isPaymentStatus = (req.body.ispayment)?req.body.ispayment : false;;
+            var isComplaintStatus = (req.body.iscomplaint)?req.body.iscomplaint : false;;
+            //Get the list of state.
+            var queryStr = "SELECT * from milkdelivery_master.sp_get_statusdata($1,$2,$3)";
+            var paramsArr = [isDeliveryStatus, isPaymentStatus, isComplaintStatus];
+            conn.pgSelectQuery(queryStr, paramsArr, clientConn, function (err, result) {
+                res.status(200);
+                if (err) {
+                    logger.error("MasterDataControl - Error while getting the status list " + err);
+                    res.json({ status: messages.apiStatusError, message: messages.dbConnectionError });
+                }
+                else {
+                    //If record is available.
+                    if (result && result.rows && result.rows.length > 0) {
+                        res.status(200);
+                        res.json({ status: messages.apiStatusSuccess, result: result.rows });
+                    }
+                    else {
+                        res.status(200);
+                        res.json({ status: messages.apiStatusError, message: messages.masterDataStatusError });
+                    }
+                }
+                done(err);
+            });
+        }
+    });
+};
+
 
